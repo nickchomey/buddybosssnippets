@@ -106,7 +106,7 @@ function replace_buddypanel_groups_icons ($title, $item, $args, $depth){
             //$avatar = '<img src="' . esc_url( $groups_template->group->avatar_thumb ) . '" class="avatar" alt="' . esc_attr( $groups_template->group->name ) . '" />';
         }
         
-        $avatar .= "<span         style='margin-left: 15px;'>{$item->name}</span>";
+        $avatar .= "<span style='margin-left: 15px;'>{$item->name}</span>";
         return $avatar;
     }
     return $title;
