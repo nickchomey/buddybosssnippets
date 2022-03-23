@@ -1,3 +1,4 @@
+<?php
 function tabi_custom_nav_menu_items($items, $menu) {
  //BuddPress sidebar menu
     if ($menu->slug == 'side-menu' && !is_admin()) {
