@@ -1,14 +1,4 @@
-<?php
-/**
- * Add User's Groups to BuddyPanel
- */
-
-toolset_snippet_security_check() or die( 'Direct access is not allowed' );
-
-// Put the code of your snippet below this comment.
-
-function tabi_custom_nav_menu_items($items, $menu)
-{
+function tabi_custom_nav_menu_items($items, $menu) {
  //BuddPress sidebar menu
     if ($menu->slug == 'side-menu' && !is_admin()) {
         $user_id = get_current_user_id();
@@ -34,7 +24,10 @@ function tabi_custom_nav_menu_items($items, $menu)
                 'group_id' => $group_id
                 ];
             }
-            array_multisort($user_groups);
+            //extract name column of user_groups array
+            $user_groups_lower = array_map('strtolower', array_column($user_groups,'name'));
+            //sort user_groups by lower_case column, for case-insensitive sort
+            array_multisort($user_groups_lower, SORT_ASC, $user_groups );
             foreach ($user_groups as $user_group){
                 $items[] = tabi_custom_nav_menu_item($user_group['group_id'], $user_group['name'], $user_group['link'], $user_group['order_index'], $user_group['parent_id']);
                 
@@ -47,6 +40,7 @@ function tabi_custom_nav_menu_items($items, $menu)
     }
     return $items;
 }
+
 add_filter('wp_get_nav_menu_items', 'tabi_custom_nav_menu_items', 20, 2);
 /**
  * Simple helper function for make menu item objects
@@ -57,14 +51,12 @@ add_filter('wp_get_nav_menu_items', 'tabi_custom_nav_menu_items', 20, 2);
  * @param int $parent - the item's parent item
  * @return \stdClass
  */
-function tabi_custom_nav_menu_item($group_id, $name, $url, $order, $parent = 0)
-{
+function tabi_custom_nav_menu_item($group_id, $name, $url, $order, $parent = 0) {
     $item = new stdClass();
     $item->group_id = $group_id;    
     $item->ID = 1000000 + $order + $parent;
     $item->db_id = $item->ID;
-    $item->post_title = $name;
-    $item->name = $name;
+    $item->post_title = $name;    
     $item->url = $url;
     $item->menu_order = $order;
     $item->menu_item_parent = $parent;
@@ -85,11 +77,7 @@ function tabi_custom_nav_menu_item($group_id, $name, $url, $order, $parent = 0)
     return $item;
 }
 
-add_filter ('nav_menu_item_title', 'replace_buddypanel_groups_icons', 10, 4);
-function replace_buddypanel_groups_icons ($title, $item, $args, $depth){
-    global $bp;
-    
-    
+function replace_buddypanel_groups_icons ($title, $item, $args, $depth) {
     if ( isset($item->group_id)){
         $avatar = bp_core_fetch_avatar(
             array(
@@ -97,15 +85,13 @@ function replace_buddypanel_groups_icons ($title, $item, $args, $depth){
                 'avatar_dir' => 'group-avatars',
                 'object'     => 'group',
                 'type'       => 'thumb',
-                'alt'        => sprintf( __( 'Group logo of %s', 'buddyboss' ), $item->name ),
+                'alt'        => sprintf( __( 'Group logo of %s', 'buddyboss' ), $item->post_title ),
                 'css_id'     => false,
                 'class'      => 'avatar',
                 'width'      => 27,
                 'height'     => 27,
             )
-        );
-        
-     
+        );      
         
         // If No avatar found, provide some backwards compatibility.        
         if ( strpos($avatar, bb_get_buddyboss_group_avatar('thumb') )) {
@@ -120,13 +106,14 @@ function replace_buddypanel_groups_icons ($title, $item, $args, $depth){
             //$avatar = '<img src="https://cdn3.iconfinder.com/data/icons/google-material-design-icons/48/ic_location_on_48px-512.png" class="avatar" width="25" height="25" alt="esc_attr( $item->name )">';
             
             // You'll likely need to adjust the margin size. And perhaps the width and heights above.
-            $avatar .= "<span style='margin-left: 10px;'>{$item->name}</span>";    
+            $avatar .= "<span style='margin-left: 10px;'>{$item->post_title}</span>";    
         }
         else {
-            $avatar .= "<span style='margin-left: 15px;'>{$item->name}</span>";
-        }
-        
+            $avatar .= "<span style='margin-left: 15px;'>{$item->post_title}</span>";
+        }        
         return $avatar;
     }
     return $title;
 }
+
+add_filter ('nav_menu_item_title', 'replace_buddypanel_groups_icons', 10, 4);
