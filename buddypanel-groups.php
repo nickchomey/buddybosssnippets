@@ -94,19 +94,31 @@ function replace_buddypanel_groups_icons ($title, $item, $args, $depth){
                 'alt'        => sprintf( __( 'Group logo of %s', 'buddyboss' ), $item->name ),
                 'css_id'     => false,
                 'class'      => 'avatar',
-                'width'      => 25,
-                'height'     => 25,
+                'width'      => 27,
+                'height'     => 27,
             )
         );
     
-        // If No avatar found, provide some backwards compatibility.
-        if ( empty( $avatar ) ) {
+        
+        // If No avatar found, provide some backwards compatibility.        
+        if ( strpos($avatar, bb_get_buddyboss_group_avatar('thumb') )) {
+            $avatar = '<i class="_mi _before buddyboss bb-icon-groups" aria-hidden="true"></i>';
             
-            $avatar = "<i class='_mi _before buddyboss bb-icon-groups' aria-hidden='true'></i>";
-            //$avatar = '<img src="' . esc_url( $groups_template->group->avatar_thumb ) . '" class="avatar" alt="' . esc_attr( $groups_template->group->name ) . '" />';
+            // Other examples of how you can set the fallback icon
+            
+            // font awesome
+            //$avatar = '<i class="_mi _before fa fa-diamond" aria-hidden="true"></i>';            
+            
+            // URL to an image
+            //$avatar = '<img src="https://cdn3.iconfinder.com/data/icons/google-material-design-icons/48/ic_location_on_48px-512.png" class="avatar" width="25" height="25" alt="esc_attr( $item->name )">';
+            
+            // You'll likely need to adjust the margin size. And perhaps the width and heights above.
+            $avatar .= "<span style='margin-left: 10px;'>{$item->name}</span>";    
+        }
+        else {
+            $avatar .= "<span style='margin-left: 15px;'>{$item->name}</span>";
         }
         
-        $avatar .= "<span style='margin-left: 15px;'>{$item->name}</span>";
         return $avatar;
     }
     return $title;
