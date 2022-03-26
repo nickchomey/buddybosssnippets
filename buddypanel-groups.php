@@ -1,6 +1,7 @@
 <?php
+
 function tabi_custom_nav_menu_items($items, $menu) {
- //BuddPress sidebar menu
+  //NOTE: Make sure the slug below matches the slug that you've set in Appearance->Menus->Menu Name for the BuddyPanel sidebar menu. 
     if ($menu->slug == 'side-menu' && !is_admin()) {
         $user_id = get_current_user_id();
         $parent_id = 0;
