@@ -64,8 +64,7 @@
 	 * Checked bbp_get_reply_admin_links() is empty or not if links not return then munu dropdown will not show
 	 */
 	if (is_user_logged_in() && !empty(strip_tags(bbp_get_reply_admin_links()))) { ?>
-		<div class="item-meta flex">
-			<p></p>
+		<div class="item-meta flex">			
 			<div class="bbp-meta push-right flex">
 				<div class="more-actions bb-reply-actions bs-dropdown-wrap align-self-center">
 					<?php
