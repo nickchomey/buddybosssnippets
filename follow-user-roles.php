@@ -1,3 +1,7 @@
+<?php
+
+//copy from below here
+
 add_filter( 'bp_get_following', 'follow_user_roles' , 10, 1 );
 function follow_user_roles( $ids ) {
 	static $follow_ids = null;
